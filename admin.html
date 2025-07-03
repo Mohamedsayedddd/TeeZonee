@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8"/>
+    <title>لوحة إدارة - TeeZone</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css "/>
+    <style>
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        body {
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px 0;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        .admin-section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: right;
+        }
+        input[type="text"], input[type="number"], select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0 15px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px 0;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        .btn-success {
+            background-color: #28a745;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        .product-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        .product-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        /* Modal لتعديل المنتج */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7);
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+        }
+        .close-btn {
+            float: left;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #000;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+        }
+        input[type="file"] {
+            margin: 5px 0 15px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>لوحة إدارة متجر TeeZone</h2>
+    <a href="products.html">صفحة المنتجات</a>
+    <!-- إضافة منتج جديد -->
+   <!-- إضافة منتج جديد -->
+<div class="admin-section">
+    <h3>إضافة منتج جديد</h3>
+    <form id="addProductForm" enctype="multipart/form-data">
+        <input type="text" id="productName" placeholder="اسم المنتج" required>
+
+        <label for="productBrand">الشركة:</label>
+        <input type="text" id="productBrand" placeholder="اسم الشركة">
+
+        <label for="productMaterial">الخامة:</label>
+        <input type="text" id="productMaterial" placeholder="الخامة (مثال: قطن)">
+
+        <label for="productColor">اللون:</label>
+        <input type="text" id="productColor" placeholder="اللون (مثال: أبيض)">
+
+        <label for="sizeType">نوع المقاس:</label>
+        <select id="sizeType">
+            <option value="text">S, M, L, XL, XXL</option>
+            <option value="number">أرقام</option>
+        </select>
+
+        <label for="productSizes">المقاسات:</label>
+        <input type="text" id="productSizes" placeholder="أدخل المقاسات مفصولة بفواصل (S,M,L...)">
+
+        <label for="productPriceBefore">السعر قبل الخصم:</label>
+        <input type="number" id="productPriceBefore" step="0.01" required>
+
+        <label for="productDiscount">نسبة الخصم (%):</label>
+        <input type="number" id="productDiscount" min="0" max="100" placeholder="مثال: 25">
+
+        <label for="productMainImage">الصورة الرئيسية:</label>
+        <input type="file" id="productMainImage" accept="image/*" required>
+
+        <label for="productGalleryImages">صور إضافية:</label>
+        <input type="file" id="productGalleryImages" multiple accept="image/*">
+
+        <button type="submit">إضافة المنتج</button>
+    </form>
+</div>
+
+    <!-- عرض المنتجات -->
+    <div class="admin-section">
+        <h3>إدارة المنتجات</h3>
+        <table id="productsTable">
+            <thead>
+            <tr>
+                <th>المنتج</th>
+                <th>السعر</th>
+                <th>الكمية</th>
+                <th>التفعيل</th>
+                <th>الإجراءات</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- عرض العملاء -->
+    <div class="admin-section">
+        <h3>بيانات العملاء</h3>
+        <input type="text" id="searchCustomer" placeholder="ابحث عن عميل..." onkeyup="searchCustomers()">
+        <table id="customersTable">
+            <thead>
+            <tr>
+                <th>الاسم</th>
+                <th>البريد</th>
+                <th>رقم الهاتف</th>
+                <th>عدد الطلبات</th>
+                <th>الإجراءات</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- عرض الطلبات -->
+    <div class="admin-section">
+        <h3>الطلبات الأخيرة</h3>
+        <table id="ordersTable">
+            <thead>
+            <tr>
+                <th>العميل</th>
+                <th>المنتجات</th>
+                <th>السعر الإجمالي</th>
+                <th>التاريخ</th>
+                <th>الإجراءات</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- تقارير -->
+    <div class="admin-section">
+        <h3>تقارير المبيعات</h3>
+        <p>عدد الزوار: <span id="visitorCount">0</span></p>
+        <p>المنتجات الأكثر مبيعًا: <span id="topProducts">غير متوفر</span></p>
+        <p>إجمالي المبيعات (آخر 30 يومًا): <span id="totalSales">0</span> جنية</p>
+    </div>
+</div>
+
+<!-- نافذة تعديل المنتج -->
+<div id="editProductModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeEditModal()">&times;</span>
+        <h3>تعديل المنتج</h3>
+        <form id="editProductForm">
+            <input type="text" id="editProductName" placeholder="اسم المنتج" required>
+            <label for="editProductBrand">الشركة:</label>
+            <input type="text" id="editProductBrand" required>
+            <label for="editProductMaterial">الخامة:</label>
+            <input type="text" id="editProductMaterial" required>
+            <label for="editProductColor">اللون:</label>
+            <input type="text" id="editProductColor" required>
+            <label for="editSizeType">نوع المقاس:</label>
+            <select id="editSizeType">
+                <option value="text">S, M, L, XL, XXL</option>
+                <option value="number">أرقام</option>
+            </select>
+            <label for="editProductSizes">المقاسات:</label>
+            <input type="text" id="editProductSizes" placeholder="S,M,L,XL...">
+            <label for="editProductPriceBefore">السعر قبل الخصم:</label>
+            <input type="number" id="editProductPriceBefore" step="0.01" required>
+            <label for="editProductDiscount">نسبة الخصم (%):</label>
+            <input type="number" id="editProductDiscount" min="0" max="100">
+            <label for="editProductMainImage">الصورة الرئيسية:</label>
+            <input type="file" id="editProductMainImage" accept="image/*">
+            <label for="editProductGalleryImages">صور إضافية:</label>
+            <input type="file" id="editProductGalleryImages" multiple accept="image/*">
+            <button type="submit">حفظ التغييرات</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    let products = [];
+    let customers = [];
+    let orders = [];
+    let currentEditIndex = -1;
+
+    window.onload = function () {
+        loadProducts();
+        loadCustomers();
+        loadOrders();
+        updateReports();
+    };
+
+    // === إضافة منتج جديد === //
+    document.getElementById("addProductForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const name = document.getElementById("productName").value.trim();
+        const brand = document.getElementById("productBrand").value.trim();
+        const material = document.getElementById("productMaterial").value.trim();
+        const color = document.getElementById("productColor").value.trim();
+        const sizeType = document.getElementById("sizeType").value;
+        const sizesInput = document.getElementById("productSizes").value.trim();
+        const priceBefore = parseFloat(document.getElementById("productPriceBefore").value);
+        const discount = parseFloat(document.getElementById("productDiscount").value) || 0;
+
+        const priceAfter = priceBefore * ((100 - discount) / 100);
+        const sizes = sizesInput.split(",").map(s => s.trim());
+
+        const mainImageInput = document.getElementById("productMainImage");
+        const galleryImagesInput = document.getElementById("productGalleryImages");
+
+        if (!mainImageInput.files.length) {
+            alert("من فضلك اختر صورة رئيسية");
+            return;
+        }
+
+        const reader = new FileReader();
+        const product = {
+            id: Date.now(),
+            name,
+            brand,
+            material,
+            color,
+            sizeType,
+            sizes,
+            priceBefore,
+            discount,
+            priceAfter,
+            images: []
+        };
+
+        reader.onload = function(event) {
+            product.image = event.target.result;
+
+            const galleryFiles = Array.from(galleryImagesInput.files);
+            let loadedCount = 0;
+
+            if (galleryFiles.length === 0) {
+                product.images.push(product.image);
+                addAndSaveProduct(product);
+                return;
+            }
+
+            galleryFiles.forEach(file => {
+                const imgReader = new FileReader();
+                imgReader.onload = function(e) {
+                    product.images.push(e.target.result);
+                    loadedCount++;
+                    if (loadedCount === galleryFiles.length) {
+                        addAndSaveProduct(product);
+                    }
+                };
+                imgReader.readAsDataURL(file);
+            });
+        };
+
+        reader.readAsDataURL(mainImageInput.files[0]);
+    });
+
+    function addAndSaveProduct(product) {
+        products.push(product);
+        saveData();
+        loadProducts();
+        document.getElementById("addProductForm").reset();
+    }
+
+    function saveData() {
+        localStorage.setItem("admin_products", JSON.stringify(products));
+        localStorage.setItem("admin_customers", JSON.stringify(customers));
+        localStorage.setItem("admin_orders", JSON.stringify(orders));
+    }
+
+    function loadProducts() {
+        const tbody = document.getElementById("productsTable").querySelector("tbody");
+        products = JSON.parse(localStorage.getItem("admin_products") || "[]");
+        tbody.innerHTML = "";
+        products.forEach((product, index) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${product.name}</td>
+                <td>${product.priceAfter} جنية</td>
+                <td>${product.stock || 0}</td>
+                <td><input type="checkbox" ${product.active ? "checked" : ""} onchange="toggleProduct(${index}, this.checked)"></td>
+                <td>
+                    <button onclick="openEditModal(${index})">تعديل</button>
+                    <button class="btn-danger" onclick="deleteProduct(${index})">حذف</button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    function toggleProduct(index, isActive) {
+        products[index].active = isActive;
+        saveData();
+        loadProducts();
+    }
+
+    function deleteProduct(index) {
+        if (confirm("هل تريد حذف هذا المنتج؟")) {
+            products.splice(index, 1);
+            saveData();
+            loadProducts();
+        }
+    }
+
+    function openEditModal(index) {
+        currentEditIndex = index;
+        const product = products[index];
+
+        document.getElementById("editProductName").value = product.name;
+        document.getElementById("editProductBrand").value = product.brand || "";
+        document.getElementById("editProductMaterial").value = product.material || "";
+        document.getElementById("editProductColor").value = product.color || "";
+        document.getElementById("editSizeType").value = product.sizeType || "text";
+        document.getElementById("editProductSizes").value = product.sizes?.join(",") || "";
+        document.getElementById("editProductPriceBefore").value = product.priceBefore;
+        document.getElementById("editProductDiscount").value = product.discount;
+
+        document.getElementById("editProductModal").style.display = "block";
+    }
+
+    function closeEditModal() {
+        document.getElementById("editProductModal").style.display = "none";
+        currentEditIndex = -1;
+    }
+
+    document.getElementById("editProductForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        if (currentEditIndex === -1) return;
+
+        const product = products[currentEditIndex];
+        product.name = document.getElementById("editProductName").value.trim();
+        product.brand = document.getElementById("editProductBrand").value.trim();
+        product.material = document.getElementById("editProductMaterial").value.trim();
+        product.color = document.getElementById("editProductColor").value.trim();
+        product.sizeType = document.getElementById("editSizeType").value;
+        product.sizes = document.getElementById("editProductSizes").value.split(",").map(s => s.trim());
+        product.priceBefore = parseFloat(document.getElementById("editProductPriceBefore").value);
+        product.discount = parseFloat(document.getElementById("editProductDiscount").value) || 0;
+        product.priceAfter = product.priceBefore * ((100 - product.discount) / 100);
+
+        const imageInput = document.getElementById("editProductMainImage");
+        const galleryInput = document.getElementById("editProductGalleryImages");
+
+        const files = Array.from(imageInput.files);
+        const galleryFiles = Array.from(galleryInput.files);
+
+        if (files.length > 0) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                product.image = e.target.result;
+                if (galleryFiles.length > 0) {
+                    const galleryReaders = galleryFiles.map(file => {
+                        const r = new FileReader();
+                        r.onload = function(evt) {
+                            product.images.push(evt.target.result);
+                        };
+                        r.readAsDataURL(file);
+                    });
+                }
+                saveData();
+                loadProducts();
+                closeEditModal();
+            };
+            reader.readAsDataURL(files[0]);
+        } else {
+            saveData();
+            loadProducts();
+            closeEditModal();
+        }
+    });
+
+    function loadCustomers() {
+        const customerTbody = document.getElementById("customersTable").querySelector("tbody");
+        customers = JSON.parse(localStorage.getItem("users") || "[]");
+        customerTbody.innerHTML = "";
+        customers.forEach((customer, index) => {
+            const ordersCount = JSON.parse(localStorage.getItem("orders") || "[]")
+                .filter(order => order.customer?.name === customer.name).length;
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${customer.name}</td>
+                <td>${customer.email}</td>
+                <td>${customer.phone || "-"}</td>
+                <td>${ordersCount}</td>
+                <td>
+                    <button onclick="contactCustomer('${customer.email}', '${customer.phone}')">تواصل</button>
+                </td>
+            `;
+            customerTbody.appendChild(row);
+        });
+    }
+
+    function searchCustomers() {
+        const term = document.getElementById("searchCustomer").value.toLowerCase();
+        const filtered = customers.filter(c => c.name.toLowerCase().includes(term) || c.email.includes(term));
+        const customerTbody = document.getElementById("customersTable").querySelector("tbody");
+        customerTbody.innerHTML = "";
+        filtered.forEach((customer, index) => {
+            const ordersCount = JSON.parse(localStorage.getItem("orders") || "[]")
+                .filter(order => order.customer?.name === customer.name).length;
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${customer.name}</td>
+                <td>${customer.email}</td>
+                <td>${customer.phone || "-"}</td>
+                <td>${ordersCount}</td>
+                <td>
+                    <button onclick="contactCustomer('${customer.email}', '${customer.phone}')">تواصل</button>
+                </td>
+            `;
+            customerTbody.appendChild(row);
+        });
+    }
+
+    function contactCustomer(email, phone) {
+        const action = confirm(`تريد التواصل مع العميل؟\nالبريد: ${email}\nالهاتف: ${phone}`);
+        if (action) {
+            const message = encodeURIComponent("مرحبًا، هل يمكنني مساعدتك في شيء؟");
+            window.open(`https://wa.me/ ${phone}?text=${message}`, "_blank");
+        }
+    }
+
+    function loadOrders() {
+        const tbody = document.getElementById("ordersTable").querySelector("tbody");
+        orders = JSON.parse(localStorage.getItem("admin_orders") || "[]");
+        tbody.innerHTML = "";
+        orders.forEach(order => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${order.customer.name}</td>
+                <td>${order.items.map(item => `${item.name} (${item.quantity})`).join("<br>")}</td>
+                <td>${order.items.reduce((sum, item) => sum + item.priceAfter * item.quantity, 0).toFixed(2)} جنية</td>
+                <td>${order.date}</td>
+                <td><button onclick="printInvoice()">فاتورة</button></td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    function printInvoice() {
+        alert("سيتم إرسال الفاتورة عبر الواتساب لاحقًا.");
+    }
+
+    function updateReports() {
+        const topProducts = {};
+        const allOrders = JSON.parse(localStorage.getItem("admin_orders") || "[]");
+        allOrders.forEach(order => {
+            order.items.forEach(item => {
+                if (!topProducts[item.name]) topProducts[item.name] = 0;
+                topProducts[item.name] += item.quantity;
+            });
+        });
+        const sorted = Object.entries(topProducts).sort((a, b) => b[1] - a[1]);
+        document.getElementById("topProducts").textContent = sorted.length > 0 ? sorted.map(p => p[0]).join(", ") : "لا يوجد";
+        document.getElementById("totalSales").textContent = allOrders.reduce((sum, o) => sum + o.items.reduce((s, i) => s + i.priceAfter * i.quantity, 0), 0).toFixed(2);
+        document.getElementById("visitorCount").textContent = localStorage.getItem("visitors") || "0";
+    }
+
+    // === تخزين الزوار === //
+    let visitors = parseInt(localStorage.getItem("visitors") || "0");
+    visitors++;
+    localStorage.setItem("visitors", visitors.toString());
+</script>
+</body>
+</html>

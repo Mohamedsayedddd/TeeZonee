@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8"/>
+    <title>TeeZone | المنتجات</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css "/>
+    <style>
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        body {
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px 0;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #000;
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            border-top-right-radius: 20px;
+            border-top-left-radius: 20px;
+        }
+        .mobile-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background-color: #222 !important;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 60px;
+        }
+        .nav-links {
+            list-style: none;
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        .nav-links li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+        .nav-links li a:hover {
+            color: #ffd700;
+        }
+
+        /* Section Title */
+        .section-title {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+            color: #333;
+        }
+
+        /* Products Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .product-card {
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .sale-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #ffce00;
+            color: #000;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 15px;
+            text-align: center;
+        }
+
+        .product-name {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .product-price {
+            font-size: 1rem;
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+
+        .product-sale {
+            font-size: 0.95rem;
+            color: #28a745;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .btn-details {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 10px 15px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: center;
+            transition: background 0.3s ease;
+        }
+
+        .btn-details:hover {
+            background-color: #0056b3;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 700px;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #333;
+            background-color: red;
+        }
+
+        .modal-body {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+        }
+
+        .modal-images {
+            position: relative;
+            width: 50%;
+        }
+
+        .modal-images img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .nav-btn {
+            position: absolute;
+            top: 30%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            background: none;
+            border: none;
+            color: #000;
+            cursor: pointer;
+        }
+
+        .prev {
+            left: -10px;
+        }
+
+        .next {
+            right: -10px;
+        }
+
+        .modal-info {
+            width: 50%;
+        }
+
+        .modal-info h2 {
+            margin-bottom: 10px;
+        }
+
+        .quantity-control,
+        .size-control {
+            margin-top: 15px;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .quantity-control button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .quantity-control input {
+            width: 50px;
+            padding: 5px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .price-before {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        .price-after {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .btn-add-to-cart {
+            display: inline-block;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin-top: 15px;
+            width: 100%;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .btn-add-to-cart:hover {
+            background-color: #1e7e34;
+        }
+
+        .cart-badge {
+            background-color: #ff4d4d;
+            color: white;
+            border-radius: 50%;
+            padding: 3px 7px;
+            font-size: 0.7rem;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .modal-body {
+                flex-direction: column;
+            }
+            .modal-images {
+                width: 100%;
+                text-align: center;
+            }
+            .modal-images img {
+                width: 80%;
+            }
+            .modal-info {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="btn-details"      ><a href="admin.html">hhh</a></button>
+
+<!-- Navbar -->
+<nav class="navbar mobile-bottom-nav" dir="ltr">
+    <ul class="nav-links">
+        <li><a href="#"><i class="fas fa-shopping-bag"></i></a></li>
+        <li>
+            <a href="cart.html">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cart-count" class="cart-badge">0</span>
+            </a>
+        </li>
+        <li><a href="account.html"><i class="fas fa-user"></i></a></li>
+    </ul>
+</nav>
+
+<!-- Welcome Message -->
+<p id="userWelcome" style="text-align: center; font-size: 1.2rem; margin: 20px 0; color: #007bff;"></p>
+
+<!-- Products Grid -->
+<section class="products-section">
+    <div class="container">
+        <h2 class="section-title">Products</h2>
+        <div class="products-grid" id="productsGrid">
+            <!-- سيتم تحميل المنتجات هنا -->
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+    </div>
+</footer>
+
+<!-- Product Details Modal -->
+<div id="productModal" class="modal">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+        <div class="modal-body">
+            <div class="modal-images">
+                <button class="nav-btn prev" onclick="changeImage(-1)">&#10094;</button>
+                <img id="modalImage" src="" alt="Product Image">
+                <button class="nav-btn next" onclick="changeImage(1)">&#10095;</button>
+            </div>
+            <div class="modal-info">
+                <h2 id="modalName">اسم المنتج</h2>
+                <p><strong>السعر قبل الخصم:</strong> <span class="price-before" id="modalPriceBefore">0</span></p>
+                <p><strong>السعر بعد الخصم:</strong> <span class="price-after" id="modalPriceAfter">0</span></p>
+                <p><strong>الخامة:</strong> <span id="modalMaterial">غير متوفر</span></p>
+                <p><strong>الشركة:</strong> <span id="modalBrand">غير متوفر</span></p>
+                <p><strong>اللون:</strong> <span id="modalColor">غير متوفر</span></p>
+
+                <!-- المقاس -->
+                <div class="size-control">
+                    <label for="sizeSelect"><strong>المقاس:</strong></label>
+                    <select id="sizeSelect">
+                        <option value="">اختر المقاس</option>
+                    </select>
+                </div>
+
+                <!-- الكمية -->
+                <div class="quantity-control">
+                    <button onclick="changeQuantity(-1)">−</button>
+                    <input type="number" id="quantity" value="1" min="1" readonly>
+                    <button onclick="changeQuantity(1)">+</button>
+                </div>
+
+                <!-- زر الإضافة للسلة -->
+                <button class="btn-add-to-cart" onclick="addToCartFromModal()">إضافة للسلة</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentImageIndex = 0;
+    let modalImages = [];
+    let quantityValue = 1;
+
+    const modal = document.getElementById("productModal");
+    const modalImage = document.getElementById("modalImage");
+    const modalName = document.getElementById("modalName");
+    const modalPriceBefore = document.getElementById("modalPriceBefore");
+    const modalPriceAfter = document.getElementById("modalPriceAfter");
+    const modalMaterial = document.getElementById("modalMaterial");
+    const modalBrand = document.getElementById("modalBrand");
+    const modalColor = document.getElementById("modalColor");
+    const sizeSelect = document.getElementById("sizeSelect");
+    const quantityInput = document.getElementById("quantity");
+
+    // === عرض المنتجات === //
+    function loadProducts() {
+        const productsGrid = document.getElementById("productsGrid");
+        const storedProducts = JSON.parse(localStorage.getItem("admin_products") || "[]");
+        productsGrid.innerHTML = "";
+
+        if (!storedProducts.length) {
+            productsGrid.innerHTML = "<p class='text-center'>لا يوجد منتجات حالياً</p>";
+            return;
+        }
+
+        storedProducts.forEach(product => {
+            if (!product.active) return;
+
+            const card = document.createElement("div");
+            card.className = "product-card";
+
+            const discountPercentage = Math.round(100 - (product.priceAfter / product.priceBefore * 100)) + "%";
+
+            card.innerHTML = `
+                <div class="sale-badge">خصم ${discountPercentage}</div>
+                <img src="${product.image}" alt="${product.name}" class="product-image">
+                <div class="product-info">
+                    <h3 class="product-name">${product.name}</h3>
+                    <p class="product-price">السعر: ${product.priceAfter} جنية</p>
+                    <p class="product-sale">خصم: ${discountPercentage}</p>
+                    <button class="btn-details" onclick="openModal(${JSON.stringify(product).replace(/"/g, '&quot;')})">عرض المنتج</button>
+                </div>
+            `;
+            productsGrid.appendChild(card);
+        });
+    }
+
+    function openModal(product) {
+        currentImageIndex = 0;
+        modalImages = product.images || [product.image];
+        modalName.textContent = product.name;
+        modalPriceBefore.textContent = product.priceBefore + " جنية";
+        modalPriceAfter.textContent = product.priceAfter + " جنية";
+        modalMaterial.textContent = product.material || "غير متوفر";
+        modalBrand.textContent = product.brand || "غير متوفر";
+        modalColor.textContent = product.color || "غير متوفر";
+
+        // تحديث المقاسات
+        sizeSelect.innerHTML = '<option value="">اختر المقاس</option>';
+        if (product.sizes && product.sizes.length > 0) {
+            product.sizes.forEach(size => {
+                const option = document.createElement("option");
+                option.value = size;
+                option.textContent = size;
+                sizeSelect.appendChild(option);
+            });
+        }
+
+        // تهيئة الكمية
+        quantityValue = 1;
+        quantityInput.value = quantityValue;
+
+        // عرض الصورة الأولى
+        modalImage.src = modalImages[currentImageIndex];
+
+        // إظهار النافذة
+        modal.style.display = "block";
+    }
+
+    function closeModal() {
+        modal.style.display = "none";
+    }
+
+    function changeImage(change) {
+        currentImageIndex = (currentImageIndex + change + modalImages.length) % modalImages.length;
+        modalImage.src = modalImages[currentImageIndex];
+    }
+
+    function changeQuantity(change) {
+        quantityValue += change;
+        if (quantityValue < 1) quantityValue = 1;
+        quantityInput.value = quantityValue;
+    }
+
+    function addToCartFromModal() {
+        const quantity = parseInt(document.getElementById("quantity").value);
+        const selectedSize = document.getElementById("sizeSelect").value;
+
+        if (!selectedSize) {
+            alert("من فضلك اختر المقاس");
+            return;
+        }
+
+        const product = {
+            name: document.getElementById("modalName").textContent,
+            priceBefore: parseFloat(document.getElementById("modalPriceBefore").textContent),
+            priceAfter: parseFloat(document.getElementById("modalPriceAfter").textContent),
+            material: document.getElementById("modalMaterial").textContent,
+            brand: document.getElementById("modalBrand").textContent,
+            color: document.getElementById("modalColor").textContent,
+            size: selectedSize,
+            quantity: quantity,
+            image: document.getElementById("modalImage").src
+        };
+
+        let cart = [];
+        const savedCart = localStorage.getItem("cart");
+        if (savedCart) {
+            cart = JSON.parse(savedCart);
+        }
+
+        cart.push(product);
+        localStorage.setItem("cart", JSON.stringify(cart));
+
+        // تحديث العداد في أيقونة السلة
+        updateCartCount();
+        alert(`تمت إضافة ${quantity} من "${product.name}" بمقاس "${selectedSize}" للسلة`);
+        modal.style.display = "none";
+    }
+
+    // === تحديث عدد المنتجات في السلة === //
+    function updateCartCount() {
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+        const count = cart.reduce((total, item) => total + item.quantity, 0);
+        const badge = document.getElementById("cart-count");
+        if (badge) {
+            badge.textContent = count > 0 ? count : '';
+        }
+    }
+
+    // === عرض اسم المستخدم === //
+    function showUserGreeting() {
+        const currentUser = localStorage.getItem("currentUser");
+        if (!currentUser) return;
+        const user = JSON.parse(currentUser);
+        const welcomeElement = document.getElementById("userWelcome");
+        if (welcomeElement) {
+            welcomeElement.textContent = `مرحبًا ${user.name}`;
+        }
+    }
+
+    window.onload = function () {
+        showUserGreeting();
+        updateCartCount();
+        loadProducts();
+    };
+</script>
+</body>
+</html>

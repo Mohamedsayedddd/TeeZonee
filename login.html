@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>تسجيل الدخول - TeeZone</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css "/>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            margin: auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px 12px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .form-footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 500px) {
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>تسجيل الدخول</h2>
+    <form id="loginForm">
+        <label for="email">البريد الإلكتروني</label>
+        <input type="email" id="email" required>
+
+        <label for="password">كلمة المرور</label>
+        <input type="password" id="password" required>
+
+        <button type="submit">دخول</button>
+
+        <div class="form-footer">
+            ليس لديك حساب؟ <a href="register.html">أنشئ واحدًا</a>
+        </div>
+        <div id="message"></div>
+    </form>
+</div>
+
+<script>
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+
+        // استرجاع المستخدمين من localStorage
+        const users = JSON.parse(localStorage.getItem("users") || "[]");
+        const user = users.find(u => u.email === email && u.password === password);
+
+        if (!user) {
+            document.getElementById("message").innerHTML = '<p style="color: red; text-align: center;">البريد أو كلمة المرور غير صحيحة</p>';
+            return;
+        }
+
+        // حفظ المستخدم الحالي
+        localStorage.setItem("currentUser", JSON.stringify(user));
+        alert("تم تسجيل الدخول بنجاح!");
+
+        // إعادة التوجيه
+        window.location.href = "products.html";
+    });
+</script>
+
+</body>
+</html>

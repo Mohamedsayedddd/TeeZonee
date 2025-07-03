@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8"/>
+    <title>حسابي - TeeZone</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href=" https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css "/>
+    <style>
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        body {
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            width: 90%;
+            max-width: 700px;
+            margin: auto;
+            padding: 40px 20px;
+        }
+        .card {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .profile-info,
+        .order-history {
+            direction: rtl;
+            text-align: right;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .show-password-btn {
+            display: inline-block;
+            margin-top: 10px;
+            cursor: pointer;
+            color: #007bff;
+            font-size: 0.9rem;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .logout-btn {
+            background-color: #dc3545;
+            margin-top: 20px;
+        }
+        .logout-btn:hover {
+            background-color: #c82333;
+        }
+        .order-item {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .order-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 5px;
+            vertical-align: middle;
+            margin-left: 10px;
+        }
+        .order-item strong {
+            display: inline-block;
+            margin-top: 5px;
+        }
+        .order-item small {
+            display: block;
+            margin: 5px 0;
+            color: #666;
+        }
+        .cart-badge {
+            background-color: #ff4d4d;
+            color: white;
+            border-radius: 50%;
+            padding: 3px 7px;
+            font-size: 0.7rem;
+            min-width: 18px;
+            text-align: center;
+        }
+        .navbar {
+            background-color: #000;
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            border-top-right-radius: 20px;
+            border-top-left-radius: 20px;
+        }
+        .mobile-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background-color: #222 !important;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 60px;
+        }
+        .nav-links {
+            list-style: none;
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        .nav-links li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+        .nav-links li a:hover {
+            color: #ffd700;
+        }
+        .nav-links li a i {
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar mobile-bottom-nav" dir="ltr">
+    <ul class="nav-links">
+        <li><a href="products.html"><i class="fas fa-shopping-bag"></i></a></li>
+        <li>
+            <a href="cart.html">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cart-count" class="cart-badge">0</span>
+            </a>
+        </li>
+        <li><a href="#"><i class="fas fa-user"></i></a></li>
+    </ul>
+</nav>
+
+<!-- رسالة الترحيب باسم العميل -->
+<p id="userWelcome" style="text-align: center; font-size: 1.2rem; margin: 20px 0; color: #007bff;"></p>
+
+<!-- محتوى الصفحة -->
+<div class="container">
+    <div class="card">
+        <h2>حسابي</h2>
+
+        <!-- بيانات الحساب -->
+        <div class="profile-info">
+            <label for="userName">الاسم:</label>
+            <input type="text" id="userName" readonly>
+
+            <label for="userEmail">البريد الإلكتروني:</label>
+            <input type="email" id="userEmail" readonly>
+
+            <label for="userPassword">كلمة المرور:</label>
+            <input type="password" id="userPassword" readonly>
+            <span class="show-password-btn" onclick="togglePassword()">إظهار كلمة المرور</span>
+
+            <button class="btn" onclick="editProfile()">تعديل البيانات</button>
+        </div>
+
+        <hr style="margin: 20px 0;">
+        
+        <!-- طلبات المستخدم -->
+        <h4>طلباتي السابقة</h4>
+        <div id="ordersList">
+            <!-- سيتم تحميل الطلبات هنا -->
+        </div>
+
+        <!-- زر تسجيل الخروج -->
+        <button class="btn logout-btn" onclick="logout()">تسجيل الخروج</button>
+    </div>
+</div>
+
+<script>
+    // === عرض اسم المستخدم === //
+    function showUserGreeting() {
+        const currentUser = localStorage.getItem("currentUser");
+        if (!currentUser) {
+            document.getElementById("userWelcome").textContent = "مرحبًا بك!";
+            return;
+        }
+        const user = JSON.parse(currentUser);
+        const welcomeElement = document.getElementById("userWelcome");
+        if (welcomeElement) {
+            welcomeElement.textContent = `مرحبًا ${user.name}`;
+        }
+    }
+
+    // === تحديث عدد المنتجات في أيقونة السلة === //
+    function updateCartCount() {
+        const badge = document.getElementById("cart-count");
+        if (!badge) return;
+
+        const savedCart = localStorage.getItem("cart");
+        if (!savedCart) {
+            badge.textContent = '';
+            return;
+        }
+
+        const cart = JSON.parse(savedCart);
+        const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+        badge.textContent = count > 0 ? count : '';
+    }
+
+    // === عرض معلومات الحساب === //
+    function loadAccountInfo() {
+        const currentUser = localStorage.getItem("currentUser");
+        if (!currentUser) {
+            alert("لم يتم تسجيل الدخول");
+            window.location.href = "login.html";
+            return;
+        }
+
+        const user = JSON.parse(currentUser);
+        document.getElementById("userName").value = user.name;
+        document.getElementById("userEmail").value = user.email;
+        document.getElementById("userPassword").value = user.password;
+    }
+
+    // === إظهار/إخفاء كلمة المرور === //
+    function togglePassword() {
+        const passwordInput = document.getElementById("userPassword");
+        passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+    }
+
+    // === تعديل بيانات الحساب === //
+    function editProfile() {
+        const newName = prompt("أدخل اسمك الجديد:");
+        const newPhone = prompt("أدخل رقم هاتفك الجديد:");
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+        if (newName) currentUser.name = newName;
+        if (newPhone) currentUser.phone = newPhone;
+
+        // تحديث بيانات المستخدم في القائمة
+        const users = JSON.parse(localStorage.getItem("users") || "[]");
+        const index = users.findIndex(u => u.email === currentUser.email);
+        if (index !== -1) {
+            users[index] = currentUser;
+            localStorage.setItem("users", JSON.stringify(users));
+            localStorage.setItem("currentUser", JSON.stringify(currentUser));
+            alert("تم تحديث بياناتك بنجاح!");
+            loadAccountInfo();
+        }
+    }
+
+    // === عرض طلبات المستخدم === //
+    function displayUserOrders() {
+        const ordersDiv = document.getElementById("ordersList");
+        const currentUser = localStorage.getItem("currentUser");
+
+        if (!currentUser || !ordersDiv) return;
+
+        const user = JSON.parse(currentUser);
+        const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+        ordersDiv.innerHTML = "";
+
+        let foundOrder = false;
+
+        orders.forEach((order, index) => {
+            if (order.customer?.name === user.name) {
+                foundOrder = true;
+                const orderHTML = `
+                    <div class="order-item">
+                        <strong>طلب #${index + 1}</strong><br>
+                        التاريخ: ${order.date || "غير متوفر"}<br>
+                        <strong>المنتجات:</strong><br>
+                        ${order.items.map(item => `
+                            <img src="${item.image}" alt="${item.name}">
+                            ${item.name} — الكمية: ${item.quantity}, المقاس: ${item.size}<br>
+                            <small>السعر: ${item.priceAfter} جنية</small><br>
+                        `).join("")}
+                        <strong>الإجمالي: ${order.items.reduce((sum, item) => sum + item.priceAfter * item.quantity, 0).toFixed(2)} جنية</strong>
+                    </div>
+                `;
+                ordersDiv.innerHTML += orderHTML;
+            }
+        });
+
+        if (!foundOrder) {
+            ordersDiv.innerHTML = "<p class='text-center'>لا توجد طلبات سابقة.</p>";
+        }
+    }
+
+    // === تسجيل الخروج === //
+    function logout() {
+        if (confirm("هل تريد تسجيل الخروج؟")) {
+            localStorage.removeItem("currentUser");
+            alert("تم تسجيل الخروج بنجاح.");
+            window.location.href = "login.html";
+        }
+    }
+
+    // === تحميل البيانات عند فتح الصفحة === //
+    window.onload = function () {
+        showUserGreeting();
+        updateCartCount();
+        loadAccountInfo();
+        displayUserOrders();
+    };
+</script>
+</body>
+</html>

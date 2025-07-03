@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <title>TeeZone | السلة</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css "/>
+    <style>
+        /* نفس الـ CSS كما هو */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        body {
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+            padding: 40px 20px;
+        }
+        .navbar {
+            background-color: #000;
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            border-top-right-radius: 20px;
+            border-top-left-radius: 20px;
+        }
+        .mobile-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background-color: #222 !important;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 60px;
+        }
+        .nav-links {
+            list-style: none;
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        .nav-links li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+        .nav-links li a:hover {
+            color: #ffd700;
+        }
+        .nav-links li a i {
+            font-size: 1.2rem;
+        }
+        .cart-badge {
+            background-color: #ff4d4d;
+            color: white;
+            border-radius: 50%;
+            padding: 3px 7px;
+            font-size: 0.7rem;
+            min-width: 18px;
+            text-align: center;
+        }
+        .cart-section {
+            padding: 40px 0;
+        }
+        .cart-list {
+            margin-bottom: 30px;
+        }
+        .cart-item {
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .cart-item:hover {
+            transform: scale(1.01);
+        }
+        .cart-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-left: 15px;
+        }
+        .cart-details {
+            flex-grow: 1;
+        }
+        .cart-details h5 {
+            font-size: 1rem;
+            font-weight: bold;
+        }
+        .cart-details p {
+            margin: 5px 0;
+            font-size: 0.9rem;
+        }
+        .cart-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-end;
+            justify-content: space-between;
+        }
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .quantity-control button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .quantity-control input {
+            width: 50px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+        }
+        .price-single {
+            font-weight: bold;
+            color: #28a745;
+        }
+        .btn-remove-top {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5rem;
+            background-color: transparent;
+            border: none;
+            color: #dc3545;
+            cursor: pointer;
+        }
+        .btn-remove-top:hover {
+            color: #a71d2a;
+        }
+        .total-section {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            text-align: right;
+        }
+        .total-section h5 {
+            margin-bottom: 10px;
+        }
+        .btn-checkout {
+            display: inline-block;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin-top: 10px;
+            width: 100%;
+            border-radius: 5px;
+            font-size: 1rem;
+            text-align: center;
+        }
+        .btn-checkout:hover {
+            background-color: #1e7e34;
+        }
+        #orderFormSection {
+            margin-top: 30px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .form-label {
+            font-weight: bold;
+        }
+        .form-select,
+        .form-control {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            width: 100%;
+            cursor: pointer;
+        }
+        .form-button:hover {
+            background-color: #0056b3;
+        }
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: vertical;
+            font-size: 0.95rem;
+        }
+        .footer {
+            background-color: #222;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- رسالة الترحيب باسم العميل -->
+<p id="userWelcome" style="text-align: center; font-size: 1.2rem; margin: 20px 0; color: #007bff;"></p>
+
+<!-- Navbar -->
+<nav class="navbar mobile-bottom-nav">
+    <ul class="nav-links">
+        <li><a href="account.html"><i class="fas fa-user"></i></a></li>
+        <li>
+            <a href="cart.html">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cart-count" class="cart-badge">0</span>
+            </a>
+        </li>
+        <li><a href="products.html"><i class="fas fa-shopping-bag"></i></a></li>
+    </ul>
+</nav>
+
+<!-- Cart Section -->
+<section class="cart-section">
+    <div class="container">
+        <h2 class="section-title">سلة المشتريات</h2>
+
+        <!-- قائمة المنتجات -->
+        <div id="cart-items" class="cart-list">
+            <p class="text-center">سلتك فارغة حالياً</p>
+        </div>
+
+        <!-- السعر الإجمالي -->
+        <div class="total-section">
+            <h5>المجموع: <span id="total-price">0</span> جنية</h5>
+            <button class="btn-checkout" onclick="toggleOrderForm()">إكمال الطلب</button>
+        </div>
+
+        <!-- نموذج معلومات الشحن -->
+        <section id="orderFormSection" style="display: none;">
+            <h4>معلومات التوصيل</h4>
+            <form onsubmit="submitOrder(event)">
+                <div class="form-group">
+                    <label for="name">الاسم *</label>
+                    <input type="text" id="name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">رقم الهاتف *</label>
+                    <input type="tel" id="phone" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="governorate">المحافظة</label>
+                    <select id="governorate" class="form-select form-control">
+                        <option value="">اختر المحافظة</option>
+                        <option value="القاهرة">القاهرة</option>
+                        <option value="الجيزة">الجيزة</option>
+                        <option value="الإسكندرية">الإسكندرية</option>
+                        <option value="المنيا">المنيا</option>
+                        <option value="الشرقية">الشرقية</option>
+                        <option value="الدقهلية">الدقهلية</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="address">العنوان بالتفصيل</label>
+                    <input type="text" id="address" class="form-control" placeholder="شارع، عمارة، طابق...">
+                </div>
+                <div class="form-group">
+                    <label for="note">ملاحظات اختيارية</label>
+                    <textarea id="note" rows="2" class="form-control" placeholder="أي ملاحظات..."></textarea>
+                </div>
+                <button type="submit" class="form-button">تأكيد الطلب</button>
+            </form>
+        </section>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <p>&copy; 2025 TeeZone. جميع الحقوق محفوظة.</p>
+    </div>
+</footer>
+
+<script>
+    let cart = [];
+
+    // === تحميل السلة عند فتح الصفحة === //
+    window.onload = function () {
+        loadCart();
+        updateCartUI();
+        showUserGreeting();
+        updateCartCount();
+    };
+
+    // === قراءة السلة من localStorage === //
+    function loadCart() {
+        const savedCart = localStorage.getItem("cart");
+        if (savedCart) {
+            cart = JSON.parse(savedCart);
+        }
+    }
+
+    // === تحديث واجهة السلة === //
+    function updateCartUI() {
+        const cartItemsDiv = document.getElementById('cart-items');
+        const totalPriceSpan = document.getElementById('total-price');
+        if (!cartItemsDiv) return;
+
+        cartItemsDiv.innerHTML = '';
+        if (cart.length === 0) {
+            cartItemsDiv.innerHTML = '<p class="text-center">سلتك فارغة حالياً</p>';
+            totalPriceSpan.textContent = '0';
+            return;
+        }
+
+        let total = 0;
+        cart.forEach((item, index) => {
+            const itemTotal = item.priceAfter * item.quantity;
+            total += itemTotal;
+
+            const itemHTML = `
+                <div class="cart-item">
+                    <button class="btn-remove-top" onclick="removeFromCart(${index})">&times;</button>
+                    <img src="${item.image}" alt="${item.name}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; margin-left: 15px;">
+                    <div class="cart-details">
+                        <h5>${item.name}</h5>
+                        <p>السعر قبل الخصم: <del>${item.priceBefore} جنية</del></p>
+                        <p>السعر بعد الخصم: ${item.priceAfter} جنية</p>
+                        <p>الخامة: ${item.material || "غير متوفر"}</p>
+                        <p>الشركة: ${item.brand || "غير متوفر"}</p>
+                        <p>اللون: ${item.color || "غير متوفر"}</p>
+                        <div class="d-flex align-items-center mb-2">
+                            <label class="me-2">المقاس:</label>
+                            <input type="text" value="${item.size || ''}" onchange="updateSize(${index}, this.value)" style="width: 60px; text-align: center;">
+                        </div>
+                    </div>
+                    <div class="cart-actions">
+                        <div class="price-single">${itemTotal.toFixed(2)} جنية</div>
+                        <div class="quantity-control">
+                            <button onclick="changeQuantity(${index}, -1)">−</button>
+                            <input type="number" id="qty-${index}" value="${item.quantity}" min="1" onchange="updateQuantity(${index}, this.value)" readonly>
+                            <button onclick="changeQuantity(${index}, 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            cartItemsDiv.innerHTML += itemHTML;
+        });
+
+        totalPriceSpan.textContent = total.toFixed(2);
+    }
+
+    // === حذف منتج من السلة === //
+    function removeFromCart(index) {
+        const itemName = cart[index].name;
+        const confirmDelete = confirm(`هل تريد بالتأكيد حذف "${itemName}" من السلة؟`);
+        if (confirmDelete) {
+            cart.splice(index, 1);
+            saveCart();
+            updateCartUI();
+        }
+    }
+
+    // === حفظ السلة في localStorage === //
+    function saveCart() {
+        localStorage.setItem("cart", JSON.stringify(cart));
+    }
+
+    // === تعديل الكمية === //
+    function changeQuantity(index, delta) {
+        cart[index].quantity += delta;
+        if (cart[index].quantity < 1) cart[index].quantity = 1;
+        document.getElementById(`qty-${index}`).value = cart[index].quantity;
+        saveCart();
+        updateCartUI();
+    }
+
+    // === تحديث الكمية من الحقل === //
+    function updateQuantity(index, value) {
+        cart[index].quantity = parseInt(value);
+        if (isNaN(cart[index].quantity) || cart[index].quantity < 1) cart[index].quantity = 1;
+        saveCart();
+        updateCartUI();
+    }
+
+    // === تحديث المقاس === //
+    function updateSize(index, newSize) {
+        cart[index].size = newSize;
+        saveCart();
+    }
+
+    // === إظهار/إخفاء نموذج الطلب === //
+    function toggleOrderForm() {
+        const orderForm = document.getElementById("orderFormSection");
+        orderForm.style.display = (orderForm.style.display === "none" || orderForm.style.display === "") ? "block" : "none";
+    }
+
+    // === تسجيل الطلب وإرساله على الواتساب === //
+    function submitOrder(e) {
+        e.preventDefault();
+        const name = document.getElementById("name").value.trim();
+        const phone = document.getElementById("phone").value.trim();
+        const governorate = document.getElementById("governorate").value;
+        const address = document.getElementById("address").value.trim();
+        const note = document.getElementById("note").value.trim();
+
+        if (!name || !phone) {
+            alert("من فضلك املأ الحقول المطلوبة (*)");
+            return;
+        }
+
+        const order = {
+            customer: {
+                name,
+                phone,
+                governorate,
+                address,
+                note
+            },
+            items: [...cart],
+            date: new Date().toLocaleDateString()
+        };
+
+        // حفظ الطلب في كل الصفحات
+        const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+        const adminOrders = JSON.parse(localStorage.getItem("admin_orders") || "[]");
+
+        orders.push(order);
+        adminOrders.push(order);
+
+        localStorage.setItem("orders", JSON.stringify(orders));
+        localStorage.setItem("admin_orders", JSON.stringify(adminOrders));
+
+        // إرسال الطلب عبر الواتساب
+        let message = `📦 *طلب جديد من TeeZone*\n`;
+        message += `*الاسم:* ${name}\n`;
+        message += `*رقم الهاتف:* ${phone}\n`;
+        message += `*المحافظة:* ${governorate || "غير محدد"}\n`;
+        message += `*العنوان:* ${address || "غير محدد"}\n`;
+        message += `*ملاحظات:* ${note || "لا يوجد"}\n\n`;
+        message += `🧾 *تفاصيل الطلب*:\n`;
+
+        cart.forEach((item, index) => {
+            message += `${index + 1}. ${item.name} — الكمية: ${item.quantity}, المقاس: ${item.size}\n`;
+        });
+
+        message += `\n✅ *السعر الإجمالي:* ${calculateTotal().toFixed(2)} جنية`;
+
+        // استبدل برقمك ← لا تنسَ كود الدولة مثل 2010012345678
+        const whatsappURL = `https://wa.me/201015832380?text=${encodeURIComponent(message)}`;
+        window.open(whatsappURL, '_blank');
+
+        // مسح السلة بعد الإرسال
+        cart = [];
+        saveCart();
+        updateCartUI();
+        document.querySelector("#orderFormSection").style.display = "none";
+        document.querySelector("form").reset();
+
+        alert("تم إرسال الطلب بنجاح!");
+    }
+
+    // === حساب المجموع === //
+    function calculateTotal() {
+        return cart.reduce((sum, item) => sum + (item.priceAfter * item.quantity), 0);
+    }
+
+    // === عرض اسم المستخدم === //
+    function showUserGreeting() {
+        const currentUser = localStorage.getItem("currentUser");
+        if (!currentUser) return;
+        const user = JSON.parse(currentUser);
+        const welcomeElement = document.getElementById("userWelcome");
+        if (welcomeElement) {
+            welcomeElement.textContent = `مرحبًا ${user.name}`;
+        }
+    }
+
+    // === تحديث عدد المنتجات في أيقونة السلة === //
+    function updateCartCount() {
+        const badge = document.getElementById("cart-count");
+        if (!badge) return;
+
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const count = cart.reduce((total, item) => total + item.quantity, 0);
+        badge.textContent = count > 0 ? count : '';
+    }
+
+    // === إعادة تعيين السلة === //
+    function updateCartUI() {
+        const cartItemsDiv = document.getElementById('cart-items');
+        const totalPriceSpan = document.getElementById('total-price');
+        if (!cartItemsDiv) return;
+
+        cartItemsDiv.innerHTML = '';
+        if (cart.length === 0) {
+            cartItemsDiv.innerHTML = '<p class="text-center">سلتك فارغة حالياً</p>';
+            totalPriceSpan.textContent = '0';
+            return;
+        }
+
+        let total = 0;
+        cart.forEach((item, index) => {
+            const itemTotal = item.priceAfter * item.quantity;
+            total += itemTotal;
+            const itemHTML = `
+                <div class="cart-item">
+                    <button class="btn-remove-top" onclick="removeFromCart(${index})">&times;</button>
+                    <img src="${item.image}" alt="${item.name}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; margin-left: 15px;">
+                    <div class="cart-details">
+                        <h5>${item.name}</h5>
+                        <p>السعر قبل الخصم: <del>${item.priceBefore} جنية</del></p>
+                        <p>السعر بعد الخصم: ${item.priceAfter} جنية</p>
+                        <p><strong>الخامة:</strong> ${item.material || "غير متوفر"}</p>
+                        <p><strong>الشركة:</strong> ${item.brand || "غير متوفر"}</p>
+                        <p><strong>اللون:</strong> ${item.color || "غير متوفر"}</p>
+                        <div class="d-flex align-items-center mb-2">
+                            <label class="me-2">المقاس:</label>
+                            <input type="text" value="${item.size || ''}" onchange="updateSize(${index}, this.value)" style="width: 60px; text-align: center;">
+                        </div>
+                    </div>
+                    <div class="cart-actions">
+                        <div class="price-single">${itemTotal.toFixed(2)} جنية</div>
+                        <div class="quantity-control">
+                            <button onclick="changeQuantity(${index}, -1)">−</button>
+                            <input type="number" id="qty-${index}" value="${item.quantity}" min="1" onchange="updateQuantity(${index}, this.value)" readonly>
+                            <button onclick="changeQuantity(${index}, 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            cartItemsDiv.innerHTML += itemHTML;
+        });
+
+        totalPriceSpan.textContent = total.toFixed(2);
+    }
+</script>
+</body>
+</html>
