@@ -254,6 +254,7 @@
         const user = JSON.parse(currentUser);
         document.getElementById("userName").value = user.name;
         document.getElementById("userEmail").value = user.email;
+        document.getElementById("userPhone").value = user.phone || "-"; // إضافة رقم الهاتف
         document.getElementById("userPassword").value = user.password;
     }
 
